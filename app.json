@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ApliRegle",
-    "slug": "ApliRegle",
+    "name": "BaddieBlood",
+    "slug": "baddieblood",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,21 +10,41 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#7d1d4f"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.baddieblood.app"
     },
     "android": {
+      "package": "com.baddieblood.app",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#7d1d4f"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "defaultChannel": "default"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "b7e3995e-1f93-4943-8731-3a23f3fddb5e"
+      }
+    },
+    "owner": "nairyc"
   }
 }
