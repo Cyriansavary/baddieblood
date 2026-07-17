@@ -35,6 +35,8 @@ export async function requestNotificationPermissions(): Promise<boolean> {
         name: 'BaddieBlood',
         importance: Notifications.AndroidImportance.DEFAULT,
         vibrationPattern: [0, 250, 250, 250],
+        // Rappels de règles/rendez-vous médicaux : contenu masqué sur l'écran verrouillé.
+        lockscreenVisibility: Notifications.AndroidNotificationVisibility.PRIVATE,
       });
     }
 
@@ -95,8 +97,10 @@ export async function scheduleAppointmentReminder(
 
     return await Notifications.scheduleNotificationAsync({
       content: {
-        title: `Rappel : ${title}`,
-        body: notes || "Tu as un rendez-vous médical prévu. Vérifie tes notes dans l'app.",
+        // Le titre reste générique : le détail (type de rendez-vous, notes) est potentiellement
+        // sensible et ne doit pas être visible en aperçu sur un écran verrouillé ou partagé.
+        title: 'Rappel médical',
+        body: notes ? `${title} · ${notes}` : `${title} : vérifie tes notes dans l'app.`,
         data: { type: 'appointment-reminder' },
       },
       trigger: {
