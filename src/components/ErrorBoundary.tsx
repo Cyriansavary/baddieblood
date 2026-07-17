@@ -1,5 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
-import { Pressable, SafeAreaView, Text, View } from 'react-native';
+import { Pressable, SafeAreaView, Text } from 'react-native';
 
 type Props = {
   children: ReactNode;
@@ -33,10 +33,10 @@ export class ErrorBoundary extends Component<Props, State> {
       <SafeAreaView style={{ flex: 1, backgroundColor: '#fff2f8', alignItems: 'center', justifyContent: 'center', padding: 32 }}>
         <Text style={{ fontSize: 32, marginBottom: 16 }}>⚠️</Text>
         <Text style={{ fontSize: 20, fontWeight: '700', color: '#5c1736', marginBottom: 8, textAlign: 'center' }}>
-          Quelque chose s'est mal passé
+          Quelque chose s&apos;est mal passé
         </Text>
         <Text style={{ fontSize: 14, color: '#8a4060', lineHeight: 20, textAlign: 'center', marginBottom: 24 }}>
-          Une erreur inattendue s'est produite. Tes données locales sont préservées.
+          Une erreur inattendue s&apos;est produite. Tes données locales sont préservées.
         </Text>
         <Pressable
           onPress={this.reset}

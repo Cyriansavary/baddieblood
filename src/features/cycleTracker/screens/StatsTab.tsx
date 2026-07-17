@@ -135,7 +135,7 @@ export function StatsTab({
             ) : (
               <View style={styles.timelineItem}>
                 <Text style={styles.emptyText}>
-                  Aucun journal pour le moment. Note tes journées depuis l'onglet Grossesse.
+                  Aucun journal pour le moment. Note tes journées depuis l&apos;onglet Grossesse.
                 </Text>
               </View>
             )}
