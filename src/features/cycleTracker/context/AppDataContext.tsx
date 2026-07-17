@@ -101,11 +101,16 @@ export type AppData = {
   onSaveMedicalReminder: () => void;
   onDeleteMedicalReminder: (id: string) => void;
   onToggleMedicalReminderCompleted: (id: string) => void;
-  // Data export
+  // Data export / import
   onExportData: () => Promise<void>;
+  onImportData: () => void;
   // Theme
   themeScheme: ThemeScheme;
   onToggleTheme: () => void;
+  // App lock
+  isLockEnabled: boolean;
+  isLockSupported: boolean;
+  onToggleLock: (enabled: boolean) => void;
 };
 
 const AppDataContext = createContext<AppData | null>(null);

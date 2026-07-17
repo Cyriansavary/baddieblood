@@ -197,6 +197,34 @@ function ProfilScreen() {
             thumbColor={c.white}
           />
         </View>
+        {d.isLockSupported && (
+          <View
+            style={{
+              marginHorizontal: 20,
+              marginTop: 10,
+              marginBottom: 4,
+              backgroundColor: c.bgCard,
+              borderRadius: 16,
+              paddingHorizontal: 20,
+              paddingVertical: 14,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderWidth: 1,
+              borderColor: c.borderCard,
+            }}
+          >
+            <Text style={{ color: c.textPrimary, fontSize: 15, fontWeight: '600' }}>
+              Verrouillage biométrique
+            </Text>
+            <Switch
+              value={d.isLockEnabled}
+              onValueChange={d.onToggleLock}
+              trackColor={{ false: c.borderCard, true: c.primary }}
+              thumbColor={c.white}
+            />
+          </View>
+        )}
         <ProfileTab
           profileForm={d.profileForm}
           profileMessage={d.profileMessage}
@@ -218,10 +246,18 @@ function ProfilScreen() {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Exporter mes données cycle au format CSV"
-          style={[styles.secondaryAction, { marginHorizontal: 20, marginBottom: 32 }]}
+          style={[styles.secondaryAction, { marginHorizontal: 20, marginTop: 4 }]}
           onPress={() => void d.onExportData()}
         >
           <Text style={styles.secondaryActionText}>Exporter mes données (CSV)</Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Importer des données cycle depuis un fichier CSV"
+          style={[styles.secondaryAction, { marginHorizontal: 20, marginTop: 10, marginBottom: 32 }]}
+          onPress={() => d.onImportData()}
+        >
+          <Text style={styles.secondaryActionText}>Importer des données (CSV)</Text>
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -257,9 +293,9 @@ export function MainDashboardScreen() {
   const c = useColors();
 
   const tabIcon = (emoji: string) =>
-    ({ color }: { color: string }) => (
-      <Text style={{ fontSize: 18, color }}>{emoji}</Text>
-    );
+    function TabIcon({ color }: { color: string }) {
+      return <Text style={{ fontSize: 18, color }}>{emoji}</Text>;
+    };
 
   return (
     <>

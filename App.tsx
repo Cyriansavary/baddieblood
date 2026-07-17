@@ -24,6 +24,7 @@ import {
 import { useCycleRecords } from './src/features/cycleTracker/hooks/useCycleRecords';
 import { useCycleProfile } from './src/features/cycleTracker/hooks/useCycleProfile';
 import { useMedicalReminders } from './src/features/cycleTracker/hooks/useMedicalReminders';
+import { useAppLock } from './src/features/cycleTracker/hooks/useAppLock';
 import { DayEntryScreen } from './src/features/cycleTracker/screens/DayEntryScreen';
 import { MainDashboardScreen } from './src/features/cycleTracker/screens/MainDashboardScreen';
 import { OnboardingScreen } from './src/features/cycleTracker/screens/OnboardingScreen';
@@ -79,7 +80,9 @@ import {
 import AppDataContext from './src/features/cycleTracker/context/AppDataContext';
 import { useColors } from './src/styles/useAppStyles';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
+import { LockScreen } from './src/components/LockScreen';
 import { exportCycleData } from './src/lib/export';
+import { pickAndParseCsv } from './src/lib/import';
 import { requestNotificationPermissions } from './src/lib/notifications';
 import { ThemeProvider, useTheme } from './src/styles/ThemeContext';
 import { styles } from './src/styles/appStyles';
@@ -105,6 +108,7 @@ function AppRoot() {
   const cycleRecords = useCycleRecords();
   const cycleProfile = useCycleProfile();
   const medRem = useMedicalReminders();
+  const appLock = useAppLock();
   const c = useColors();
   const { scheme: themeScheme, toggleTheme: onToggleTheme } = useTheme();
 
@@ -506,6 +510,33 @@ function AppRoot() {
     );
   }
 
+  async function handleImportData() {
+    try {
+      const result = await pickAndParseCsv();
+      if (!result) return;
+
+      if (result.records.length === 0) {
+        Alert.alert(
+          'Import impossible',
+          "Le fichier choisi ne contient aucune entrée reconnue. Vérifie qu'il s'agit bien d'un export BaddieBlood au format CSV."
+        );
+        return;
+      }
+
+      const importedDates = new Set(result.records.map((record) => record.date));
+      const merged = [...records.filter((record) => !importedDates.has(record.date)), ...result.records];
+      await cycleRecords.persistRecords(merged);
+
+      Alert.alert(
+        'Import terminé',
+        `${result.importedCount} entrée(s) importée(s)` +
+          (result.skippedCount ? `, ${result.skippedCount} ligne(s) ignorée(s).` : '.')
+      );
+    } catch {
+      Alert.alert('Erreur', "L'import a échoué. Réessaie dans quelques instants.");
+    }
+  }
+
   function handleDeleteMedicalReminder(id: string) {
     Alert.alert(
       'Supprimer le rendez-vous',
@@ -525,6 +556,10 @@ function AppRoot() {
         <Text style={styles.loadingText}>Chargement du suivi personnel...</Text>
       </SafeAreaView>
     );
+  }
+
+  if (appLock.isLocked) {
+    return <LockScreen onUnlock={() => void appLock.authenticate()} />;
   }
 
   if (!isProfileConfigured) {
@@ -631,8 +666,12 @@ function AppRoot() {
     onReset: handleResetApplication,
     nextPeriodInDays,
     onExportData: () => exportCycleData(records, profile),
+    onImportData: () => void handleImportData(),
     themeScheme,
     onToggleTheme,
+    isLockEnabled: appLock.isLockEnabled,
+    isLockSupported: appLock.isLockSupported,
+    onToggleLock: (enabled: boolean) => void appLock.setLockEnabled(enabled),
   };
 
   return (
